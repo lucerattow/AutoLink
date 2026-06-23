@@ -1,8 +1,8 @@
 #pragma once
 
-#include "FGBuildableConveyorBase.h"
-#include "FGBuildableFactory.h"
-#include "FGBuildableHologram.h"
+#include "Buildables/FGBuildableConveyorBase.h"
+#include "Buildables/FGBuildableFactory.h"
+#include "Hologram/FGBuildableHologram.h"
 #include "FGFactoryConnectionComponent.h"
 #include "FGFluidIntegrantInterface.h"
 #include "FGPipeConnectionComponent.h"

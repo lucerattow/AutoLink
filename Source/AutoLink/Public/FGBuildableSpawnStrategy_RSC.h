@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FGBuildableSpawnStrategy.h"
+#include "Tests/FGBuildableSpawnStrategy.h"
 #include "FGRailroadTrackConnectionComponent.h"
 
 #include "FGBuildableSpawnStrategy_RSC.generated.h"

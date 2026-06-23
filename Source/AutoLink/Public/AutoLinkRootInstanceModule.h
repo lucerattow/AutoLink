@@ -1,9 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FGBuildableConveyorBase.h"
-#include "FGBuildableFactory.h"
-#include "FGBuildableHologram.h"
+#include "Buildables/FGBuildableConveyorBase.h"
+#include "Buildables/FGBuildableFactory.h"
+#include "Hologram/FGBuildableHologram.h"
 #include "FGBuildEffectActor.h"
 #include "FGFactoryConnectionComponent.h"
 #include "FGFluidIntegrantInterface.h"

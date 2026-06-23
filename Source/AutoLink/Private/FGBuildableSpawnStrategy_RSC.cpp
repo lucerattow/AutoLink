@@ -1,6 +1,6 @@
 #include "FGBuildableSpawnStrategy_RSC.h"
 
-#include "FGBuildableRailroadSwitchControl.h"
+#include "Buildables/FGBuildableRailroadSwitchControl.h"
 #include "FGPlayerController.h"
 
 UFGBuildableSpawnStrategy_RSC::UFGBuildableSpawnStrategy_RSC()

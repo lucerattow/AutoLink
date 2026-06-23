@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FGBuildable.h"
-#include "FGBuildableConveyorBase.h"
-#include "FGBuildableConveyorLift.h"
+#include "Buildables/FGBuildable.h"
+#include "Buildables/FGBuildableConveyorBase.h"
+#include "Buildables/FGBuildableConveyorLift.h"
 #include "FGBuildEffectActor.h"
-#include "FGBuildableRailroadSignal.h"
+#include "Buildables/FGBuildableRailroadSignal.h"
 #include "FGFactoryConnectionComponent.h"
 #include "FGFluidIntegrantInterface.h"
 #include "FGMaterialEffect_Build.h"
