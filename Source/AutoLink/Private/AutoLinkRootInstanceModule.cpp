@@ -13,6 +13,7 @@
 #include "Buildables/FGBuildableConveyorBase.h"
 #include "Buildables/FGBuildableConveyorBelt.h"
 #include "Buildables/FGBuildableConveyorLift.h"
+#include "FGConveyorChainActor.h"
 #include "Buildables/FGBuildableDecor.h"
 #include "Buildables/FGBuildableFactoryBuilding.h"
 #include "Buildables/FGBuildablePipeHyper.h"
@@ -972,6 +973,33 @@ void UAutoLinkRootInstanceModule::FindAndLinkCompatibleBeltConnection(UFGFactory
     {
         AL_LOG("FindAndLinkCompatibleBeltConnection: Removing, setting connection, and then re-adding conveyor so it will build the correct chain actor");
         auto buildableSybsystem = AFGBuildableSubsystem::Get(connectionComponent->GetWorld());
+
+        // Satisfactory 1.2 groups runs of connected conveyors into an AFGConveyorChainActor that the buildable
+        // subsystem ticks in parallel (AFGBuildableSubsystem::TickFactoryActors). Joining our conveyor onto an
+        // existing chain invalidates the chain actor(s) that the two conveyors currently belong to, so they have
+        // to be rebuilt.
+        //
+        // Those chain actors MUST be torn down via AFGBuildableSubsystem::ForceDestroyChainActor, which first
+        // removes them from the parallel tick buckets (and moves their items back onto the belts). If we instead
+        // just let RemoveConveyor/AddConveyor rebuild the merged chain, the still-live chain actor self-deletes
+        // (AFGConveyorChainActor::RevertChainActor_Unsafe) while it's still referenced by its tick group. That
+        // leaves a dangling pointer that crashes AFGConveyorChainActor::Factory_Tick on the next frame with an
+        // EXCEPTION_ACCESS_VIOLATION. See the note on RevertChainActor_Unsafe in FGConveyorChainActor.h. This was
+        // introduced in 1.2; in 1.1 there were no chain actors so the simple remove/add was sufficient.
+        auto connectionChainActor = connectionConveyor->GetConveyorChainActor();
+        if (connectionChainActor)
+        {
+            AL_LOG("FindAndLinkCompatibleBeltConnection: Safely destroying chain actor %s belonging to the new conveyor before linking", *connectionChainActor->GetName());
+            buildableSybsystem->ForceDestroyChainActor(connectionChainActor);
+        }
+
+        auto otherChainActor = otherConnectionConveyor->GetConveyorChainActor();
+        if (otherChainActor && otherChainActor != connectionChainActor)
+        {
+            AL_LOG("FindAndLinkCompatibleBeltConnection: Safely destroying chain actor %s belonging to the existing conveyor before linking", *otherChainActor->GetName());
+            buildableSybsystem->ForceDestroyChainActor(otherChainActor);
+        }
+
         buildableSybsystem->RemoveConveyor(connectionConveyor);
         connectionComponent->SetConnection(compatibleConnectionComponent);
         buildableSybsystem->AddConveyor(connectionConveyor);
